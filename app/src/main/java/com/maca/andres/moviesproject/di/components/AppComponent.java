@@ -2,9 +2,9 @@ package com.maca.andres.moviesproject.di.components;
 
 import android.app.Application;
 
-import com.maca.andres.moviesproject.MovieApp;
+import com.maca.andres.moviesproject.App;
 import com.maca.andres.moviesproject.di.module.ActivityModule;
-import com.maca.andres.moviesproject.di.module.AppModule;
+import com.maca.andres.moviesproject.di.module.AppModule2;
 import com.maca.andres.moviesproject.di.module.FragmentModule;
 
 import javax.inject.Singleton;
@@ -14,7 +14,7 @@ import dagger.Component;
 import dagger.android.support.AndroidSupportInjectionModule;
 
 @Singleton
-@Component(modules = {AndroidSupportInjectionModule.class, ActivityModule.class, FragmentModule.class, AppModule.class})
+@Component(modules = {AndroidSupportInjectionModule.class, ActivityModule.class, FragmentModule.class, AppModule2.class})
 public interface AppComponent {
     @Component.Builder
     interface Builder{
@@ -22,6 +22,6 @@ public interface AppComponent {
         Builder application(Application application);
         AppComponent build();
     }
-    void inject(MovieApp app);
+    void inject(App app);
 
 }

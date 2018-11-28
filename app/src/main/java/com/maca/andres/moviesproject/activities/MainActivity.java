@@ -15,9 +15,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
+import com.maca.andres.moviesproject.Fragments.TopMovieFragment;
 import com.maca.andres.moviesproject.R;
+import com.maca.andres.moviesproject.devutils.LoggerDebug;
 
 import javax.inject.Inject;
 
@@ -26,6 +27,7 @@ import dagger.android.DispatchingAndroidInjector;
 import dagger.android.support.HasSupportFragmentInjector;
 
 public class MainActivity extends AppCompatActivity implements HasSupportFragmentInjector{
+    private static final String TAG = MainActivity.class.getSimpleName();
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -50,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         configureDagger();
+        LoggerDebug.print(TAG,"OnCreate Main Activity");
 
         Toolbar toolbar =  findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -74,6 +77,7 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
                         .setAction("Action", null).show();
             }
         });
+
 
     }
 
@@ -105,7 +109,7 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
         return dispatchingAndroidInjector;
     }
 
-    /**
+    /**TODO delete this.
      * A placeholder fragment containing a simple view.
      */
     public static class PlaceholderFragment extends Fragment {
@@ -134,8 +138,6 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
             return rootView;
         }
     }
@@ -154,7 +156,8 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
-            return PlaceholderFragment.newInstance(position + 1);
+
+            return new TopMovieFragment();
         }
 
         @Override

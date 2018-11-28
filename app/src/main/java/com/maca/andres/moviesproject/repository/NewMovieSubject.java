@@ -5,11 +5,11 @@ import com.maca.andres.moviesproject.database.entity.Movie;
 import java.util.List;
 
 public interface NewMovieSubject {
-    void register(NewMovieObserver newMovieObserver);
+    void register(NewMovieObserver newMovieObserver, String Name);
 
-    void delete(NewMovieObserver newMovieObserver);
+    void delete(String Name);
 
-    void notifyNewMovieObserver(Movie movie);
+    void notifyNewMovieObserver(Movie movie, String category);
 
     void notifyInitialMovies(List<Movie> movies, String category);
 }

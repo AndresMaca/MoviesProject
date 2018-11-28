@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+                                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_margin="10dp"
+>
+    <android.support.constraint.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/starred_image"
+            android:layout_width="0dp" android:layout_height="0dp"
+            android:layout_marginBottom="13dp" android:layout_marginEnd="10dp"
+            android:layout_marginStart="10dp"
+            android:minHeight="200dp"
+            android:layout_marginTop="15dp"
+            app:layout_constraintBottom_toTopOf="@+id/starred_title"
+            app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" app:srcCompat="@drawable/hpfb"/>
+        <TextView
+            android:id="@+id/starred_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:layout_marginBottom="98dp"
+            android:layout_marginStart="16dp"
+            android:text="TextView" app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/starred_image"
+        />
+        <TextView
+            android:id="@+id/starred_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:layout_marginStart="16dp"
+            android:layout_marginTop="20dp" android:text="TextView"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/starred_title"/>
+        <TextView
+            android:id="@+id/starred_popularity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:layout_marginEnd="16dp"
+            android:layout_marginTop="13dp"
+            android:text="TextView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/starred_image"/>
+    </android.support.constraint.ConstraintLayout>
+</android.support.v7.widget.CardView>
+

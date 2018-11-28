@@ -7,6 +7,7 @@ import com.maca.andres.moviesproject.database.entity.Movie;
 import com.maca.andres.moviesproject.devutils.LoggerDebug;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.Executor;
 
@@ -34,13 +35,12 @@ public class MovieRepository implements NewMovieSubject {
     private final Executor executor; //task like local database queries are made with the executor for dont load the UI thread
     private final MovieDao movieDao;
     private final NetworkApi networkApi;
-    private List<NewMovieObserver> newMovieObservers;
+    //  private List<NewMovieObserver> newMovieObservers;
+    private HashMap<String, NewMovieObserver> newMovieObservers;
 
-    public List<Movie> getTopRatedMovies() {
-        return initialTopRatedMovies;
-    }
 
     private List<Movie> initialTopRatedMovies;
+    private List<Integer> initialKeys;
     private List<Movie> initialPopularMovies;
 
 
@@ -52,8 +52,11 @@ public class MovieRepository implements NewMovieSubject {
         initialTopRatedMovies = new ArrayList<>();
         initialPopularMovies = new ArrayList<>();
         loadInitialData();
-        newMovieObservers = new ArrayList<>();
+        newMovieObservers = new HashMap<>();
+        initialKeys = new ArrayList<>();
         loadMoviesFromApi(TOP_RATED);
+        loadMoviesFromApi(POPULAR);
+        LoggerDebug.print(TAG, "Repostory --created");
     }
 
     /**
@@ -67,6 +70,7 @@ public class MovieRepository implements NewMovieSubject {
         executor.execute(() -> {
             this.initialPopularMovies = movieDao.getAllMoviesBy(POPULAR);
             notifyInitialMovies(initialPopularMovies, POPULAR);
+            //Add initial keys
         });
     }
 
@@ -74,19 +78,33 @@ public class MovieRepository implements NewMovieSubject {
         executor.execute(() -> networkApi.getMoviesFromApiByCat(category, API_KEY).enqueue(new Callback<ApiResponse>() {
             @Override
             public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
-                List<Movie> tempList = getMovieList(category);//Getting initial data. we're going to check what movies we already passed to the observers
-                 ApiResponse  apiResponse = response.body();
-                for (int i = 0; i < apiResponse.getResults().size(); i++) {
-                    //DEBUG como hacer que no se repita con los resultados obtenidos.
-                    apiResponse.getResults().get(i).setCategory(category);
-                    movieDao.saveMovie(apiResponse.getResults().get(i));
-                    LoggerDebug.print(TAG, "Movie Saved!");
-                    if (!tempList.contains(apiResponse.getResults().get(i))) { //The observers doesnt contains this movie! Sending to All.
-                        LoggerDebug.print(TAG, "Doesnt contains movie, notifying observers");
-                        notifyNewMovieObserver(apiResponse.getResults().get(i));
+                //Getting initial data. we're going to check what movies we already passed to the observers
+                ApiResponse apiResponse = response.body();
+
+                LoggerDebug.print(TAG, "URL " + call.request().url().toString());
+
+                LoggerDebug.print(TAG, "Code" + response.code());
+                if (response.code() == 200) {
+                    LoggerDebug.print(TAG, "Network Repose Size: " + apiResponse.getResults().size());
+
+                    for (int i = 0; i < apiResponse.getResults().size(); i++) {
+                        //DEBUG como hacer que no se repita con los resultados obtenidos.
+                        LoggerDebug.print(TAG, "Iteration: " + i);
+                        apiResponse.getResults().get(i).setCategory(category);
+                        //TODO Implementar mejor tecnicas.
+                        int finalI = i;
+                        executor.execute(() -> movieDao.saveMovie(apiResponse.getResults().get(finalI))); //Save it just for update keys like vote count and popularity. It can be easily omitted checking
+                        // if the movie are already in the database with movieDao.loadMovie(movieid);
+                        LoggerDebug.print(TAG, "Movie Saved!"); //TODO COMO putas hago que esta mierda no se envie dos veces!!! primera es cuando la carga de la base de datos la segunda es cuando llegan de internet.
+                        if (!(initialKeys.contains(apiResponse.getResults().get(i).getId()))) { //The observers doesnt contains this movie! Sending to All.
+                            LoggerDebug.print(TAG, "Doesn't contains this movie, notifying observers");
+                            notifyNewMovieObserver(apiResponse.getResults().get(i), category);
+
+                        }else{
+                            LoggerDebug.print(TAG,"Movie Already in the observer");
+                        }
 
                     }
-
                 }
 
             }
@@ -101,33 +119,41 @@ public class MovieRepository implements NewMovieSubject {
     }
 
     @Override
-    public void register(NewMovieObserver newMovieObserver) {
-        if (!newMovieObservers.contains(newMovieObserver)) {
-            newMovieObservers.add(newMovieObserver);
+    public void register(NewMovieObserver newMovieObserver, String name) {
+        LoggerDebug.print(TAG, "Observer Added");
+        if (!newMovieObservers.containsKey(name)) {
+            newMovieObservers.put(name, newMovieObserver);
         }
+        LoggerDebug.print(TAG, "Observer number: " + newMovieObservers.size());
+
 
     }
 
     @Override
-    public void delete(NewMovieObserver newMovieObserver) {
-        newMovieObservers.remove(newMovieObserver);
+    public void delete(String name) {
+        newMovieObservers.remove(name);
 
     }
 
     @Override
-    public void notifyNewMovieObserver(Movie movie) {
-        for (final NewMovieObserver newMovieObserver : newMovieObservers) {
-            newMovieObserver.update(movie);
-            LoggerDebug.print(TAG, "Sending Movie to observers...");
-        }
+    public void notifyNewMovieObserver(Movie movie, String category) {
+        LoggerDebug.print(TAG, "Observers: " + newMovieObservers.size());
+        if (newMovieObservers.containsKey(category))
+            newMovieObservers.get(category).update(movie, category);
+
 
     }
 
     @Override
     public void notifyInitialMovies(List<Movie> movies, String category) {
-        for (final NewMovieObserver newMovieObserver : newMovieObservers) {
-            newMovieObserver.loadInitialMovies(movies, category);
+        if (newMovieObservers.containsKey(category)) {
+            newMovieObservers.get(category).loadInitialMovies(movies, category);
+            for (int i = 0; i < movies.size(); i++) {
+                initialKeys.add(movies.get(i).getId());
+
+            }
         }
+
     }
 
     private List<Movie> getMovieList(String category) {
@@ -139,5 +165,13 @@ public class MovieRepository implements NewMovieSubject {
             default:
                 return this.initialPopularMovies;
         }
+    }
+
+    public List<Movie> getPopularMovies() {
+        return initialPopularMovies;
+    }
+
+    public List<Movie> getTopRatedMovies() {
+        return initialTopRatedMovies;
     }
 }
