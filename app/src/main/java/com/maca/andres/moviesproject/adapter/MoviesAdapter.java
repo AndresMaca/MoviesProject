@@ -62,6 +62,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 normalMovieVH.voteAverage.setText(movie.getVoteAverage().toString());
                 normalMovieVH.title.setText(movie.getTitle());
                 Glide.with(context).load("https://image.tmdb.org/t/p/w500/" + data.get(position).getPosterPath()).into(normalMovieVH.picture);
+                break;
 
         }
 
