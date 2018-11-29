@@ -16,7 +16,10 @@ import com.maca.andres.moviesproject.database.entity.Movie;
 import com.maca.andres.moviesproject.devutils.LoggerDebug;
 
 import java.util.List;
-
+/*
+I make some movies with bigger screen size because the app bussines logic i.e: You want your movie be 'starred movie' ok, you must pay some fee. In this case i just put starred movies
+to those ones with a 8.5 in Vote Average, obviously you can set all the items with the same size just returning one value in the getItemViewType method
+ */
 public class MoviesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final String TAG = MoviesAdapter.class.getSimpleName();
     public static final int NORMAL_MOVIE = 0; //Small view of a movie
@@ -35,7 +38,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 return new NormalMovieVH(view);
             case STARRED_MOVIE:
                 View starredView = inflater.inflate(R.layout.starred_movie_itemv3, parent, false);
-                LoggerDebug.print(TAG, "NormalMovie ViewHolder");
+                LoggerDebug.print(TAG, "Starred ViewHolder");
                 return new StarredMovieVH(starredView);
             default:
                 View defaultView = inflater.inflate(R.layout.normal_movie_item, parent, false);
@@ -53,14 +56,16 @@ public class MoviesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
                 final StarredMovieVH starredMovieVH = (StarredMovieVH) holder;
                 starredMovieVH.description.setText(movie.getOverview());
-                starredMovieVH.voteAverage.setText(movie.getVoteAverage().toString());
+                starredMovieVH.voteAverage.setText(movie.getVoteAverage().toString().concat("/10"));
                 starredMovieVH.title.setText(movie.getTitle());
                 Glide.with(context).load("https://image.tmdb.org/t/p/w500/" + data.get(position).getPosterPath()).into(starredMovieVH.picture);
                 break;
             case NORMAL_MOVIE:
                 final NormalMovieVH normalMovieVH = (NormalMovieVH) holder;
-                normalMovieVH.voteAverage.setText(movie.getVoteAverage().toString());
+                normalMovieVH.voteAverage.setText(movie.getVoteAverage().toString().concat("/10"));
                 normalMovieVH.title.setText(movie.getTitle());
+                normalMovieVH.shortDescription.setText(movie.getOverview().substring(0,Math.min(movie.getOverview().length(), 100)).concat(" " +
+                        "....."));
                 Glide.with(context).load("https://image.tmdb.org/t/p/w500/" + data.get(position).getPosterPath()).into(normalMovieVH.picture);
                 break;
 
@@ -75,22 +80,26 @@ public class MoviesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     @Override
     public int getItemViewType(int position) {
-        if (data.get(position).getVoteAverage() > 8.0f) {
+
+        if (data.get(position).getVoteAverage() > 8.5f) {
             return STARRED_MOVIE;
         } else return NORMAL_MOVIE;
+
 
     }
 
     class NormalMovieVH extends RecyclerView.ViewHolder {
         private TextView title;
         private TextView voteAverage;
+        private TextView shortDescription;
         private ImageView picture;
 
         public NormalMovieVH(View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.movietitle_textview);
-            voteAverage = itemView.findViewById(R.id.movie_realease_date);
+            voteAverage = itemView.findViewById(R.id.movie_average);
             picture = itemView.findViewById(R.id.movie_imageview);
+            shortDescription = itemView.findViewById(R.id.movie_overview);
         }
     }
 

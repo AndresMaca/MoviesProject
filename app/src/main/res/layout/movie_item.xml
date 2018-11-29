@@ -31,12 +31,12 @@
                   android:layout_height="wrap_content"
                   android:paddingBottom="8dp"
                   android:text="@string/app_name"
-                  android:textColor="@color/colorBlack"
+                  android:textColor="@color/colorWhiteText"
                   android:textSize="15sp" android:textStyle="bold"/>
         <TextView android:id="@+id/date_ava" android:layout_width="match_parent"
                   android:layout_height="wrap_content" android:fontFamily="sans-serif-condensed"
                   android:text="@string/app_name" android:textAlignment="viewEnd"
-                  android:textColor="@color/colorBlack"
+                  android:textColor="@color/colorWhiteText"
                   android:textStyle="italic"/>
 
     </LinearLayout>

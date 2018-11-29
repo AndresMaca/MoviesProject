@@ -4,6 +4,7 @@
                                     android:layout_height="wrap_content"
                                     xmlns:android="http://schemas.android.com/apk/res/android"
                                     android:layout_width="match_parent"
+                                    app:cardBackgroundColor="@color/colorSecundary"
                                     android:layout_margin="10dp"
 >
 
@@ -30,6 +31,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="TextView"
+            android:textColor="@color/colorWhiteText"
             android:textStyle="bold"
             android:textSize="20sp"
             app:layout_constraintLeft_toRightOf="@+id/movie_imageview"
@@ -40,12 +42,14 @@
             app:layout_constraintRight_toRightOf="parent" />
 
         <TextView
-            android:id="@+id/movie_realease_date"
+            android:id="@+id/movie_average"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             app:layout_constraintTop_toBottomOf="@+id/movietitle_textview"
             android:layout_marginLeft="0dp"
+            android:textColor="@color/colorWhiteText"
+            android:textStyle="bold"
             app:layout_constraintLeft_toLeftOf="@+id/movietitle_textview"
             android:layout_marginRight="8dp"
             app:layout_constraintRight_toRightOf="parent"
@@ -56,10 +60,12 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="TextView"
+            android:textColor="@color/colorWhiteText"
+            android:textStyle="bold"
             android:layout_marginTop="8dp"
-            app:layout_constraintTop_toBottomOf="@+id/movie_realease_date"
+            app:layout_constraintTop_toBottomOf="@+id/movie_average"
             android:layout_marginLeft="0dp"
-            app:layout_constraintLeft_toLeftOf="@+id/movie_realease_date"
+            app:layout_constraintLeft_toLeftOf="@+id/movie_average"
             android:layout_marginRight="8dp"
             app:layout_constraintRight_toRightOf="parent"
             android:layout_marginBottom="20dp"
