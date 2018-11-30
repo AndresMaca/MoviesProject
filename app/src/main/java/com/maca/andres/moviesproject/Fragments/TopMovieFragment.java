@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.maca.andres.moviesproject.R;
+import com.maca.andres.moviesproject.adapter.CustomScrollListener;
 import com.maca.andres.moviesproject.adapter.MoviesAdapter;
 import com.maca.andres.moviesproject.database.entity.Movie;
 import com.maca.andres.moviesproject.devutils.LoggerDebug;
@@ -39,8 +40,12 @@ public class TopMovieFragment extends android.support.v4.app.Fragment {
     private TopMoviesViewModel moviesViewModel;
     private MoviesAdapter moviesAdapter;
     private RecyclerView recyclerView;
+    private LinearLayoutManager linearLayoutManager;
     private List<Movie> data;
     private List<Integer> keys;
+    private boolean isLoading;
+    private boolean isLastPage;
+    private int totalPages;
 
     public TopMovieFragment() {
     }
@@ -49,13 +54,45 @@ public class TopMovieFragment extends android.support.v4.app.Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_main,container,false);
+        View view = inflater.inflate(R.layout.fragment_main, container, false);
         recyclerView = view.findViewById(R.id.reyclerview_movie_list);
-        data= new ArrayList<>();
+        data = new ArrayList<>();
         moviesAdapter = new MoviesAdapter(data, getActivity());
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        linearLayoutManager = new LinearLayoutManager(getActivity());
+        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.addOnScrollListener(new CustomScrollListener(linearLayoutManager) {
+
+            @Override
+            public boolean isLoading() {
+
+                return isLoading;
+
+            }
+
+            @Override
+            protected void loadMoreItems() {
+                isLoading = true;
+                loadNextPage();
+
+            }
+
+            @Override
+            public boolean isLastPage() { //TODO delete this
+                return isLastPage;
+            }
+
+            @Override
+            public int getTotalPageCount() {
+                return totalPages;
+            }
+        });
         recyclerView.setAdapter(moviesAdapter);
         return view;
+    }
+
+    private void loadNextPage() {
+        moviesViewModel.getNextChunckOfData();
+
     }
 
     @Override
@@ -85,6 +122,7 @@ public class TopMovieFragment extends android.support.v4.app.Fragment {
             data.clear();
             data.addAll(hs);
             moviesAdapter.notifyDataSetChanged();
+            isLoading=false;
             //updateAdapter();
         }
     }
