@@ -26,42 +26,43 @@ public class TopMoviesViewModel extends ViewModel implements NewMovieObserver {
 
 
     private MutableLiveData<List<Movie>> movieListTopRated;
-
+    private int currentPage = 1;
     private MovieRepository movieRepository;
+    protected String CATEGORY;
 
     @Inject
     public TopMoviesViewModel(MovieRepository movieRepository) {
         this.movieRepository = movieRepository;
-        movieRepository.register(this,TOP_RATED); //Attaching observer to Repository.
+        this.CATEGORY = TOP_RATED;
+        movieRepository.register(this, CATEGORY); //Attaching observer to Repository.
         init();
 
     }
 
     private void init() {
-        LoggerDebug.print(TAG, "Movies View Model Initialized");
+        LoggerDebug.print(TAG, "Top Movies View Model Initialized");
         if (movieListTopRated == null) {
+            LoggerDebug.print(TAG, "MOVIE LIST IS NULL");
             movieListTopRated = new MutableLiveData<>();
-            if (movieRepository.getTopRatedMovies() != null) { //Getting local stored data
-                movieListTopRated.setValue(movieRepository.getTopRatedMovies());
-            } else {
-                movieListTopRated.setValue(new ArrayList<>());
-            }
+            movieListTopRated.setValue(new ArrayList<>());
+            movieRepository.loadMoviesFromApi(CATEGORY, currentPage);
+
         }
     }
 
 
     @Override
     public void update(Movie movie, String category) {
-        LoggerDebug.print(TAG, ".... getting new movie from repo");
+        //  LoggerDebug.print(TAG, ".... getting new movie from repo");
         LoggerDebug.print(TAG, "movie title: " + movie.getTitle());
         addMovieFromRepo(movie, category);
 
     }
 
     private void addMovieFromRepo(Movie movie, String category) {//
-        if(category.equals(TOP_RATED)){
+        if (category.equals(CATEGORY)) {
             addMovieToLiveData(movieListTopRated, movie);
-            LoggerDebug.print(TAG, "Adding movie to TopRated List");
+            LoggerDebug.print(TAG, "Adding movie to Top Movies List");
         }
     }
 
@@ -70,21 +71,20 @@ public class TopMoviesViewModel extends ViewModel implements NewMovieObserver {
         movieListMutableLiveData.postValue(movieListMutableLiveData.getValue()); //Because the thread are sending in background thread
     }
 
-    @Override
-    public void loadInitialMovies(List<Movie> movies, String category) {
-        if (category.equals(TOP_RATED)){
-            movieListTopRated.postValue(movies);
-        }
 
-    }
-
-    public MutableLiveData<List<Movie>> getMovieListTopRated() {
+    public MutableLiveData<List<Movie>> getmovieListTopRated() {
+        LoggerDebug.print(TAG, "size list top rated: " + movieListTopRated.getValue().size());
         return movieListTopRated;
     }
 
     @Override
     protected void onCleared() { //Observer is not alive anymore
         super.onCleared();
-        movieRepository.delete(TOP_RATED);
+        movieRepository.delete(CATEGORY);
     }
+    public void getNextChunckOfData(){
+        currentPage++;
+        movieRepository.loadMoviesFromApi(CATEGORY, currentPage);
+    }
+
 }

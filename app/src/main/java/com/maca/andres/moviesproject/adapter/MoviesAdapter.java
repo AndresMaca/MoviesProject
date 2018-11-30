@@ -24,7 +24,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private static final String TAG = MoviesAdapter.class.getSimpleName();
     public static final int NORMAL_MOVIE = 0; //Small view of a movie
     public static final int STARRED_MOVIE = 1; //Starred Movie, its view is bigger
-    private List<Movie> data;
+    protected List<Movie> data;
     private Context context;
 
     @NonNull
@@ -53,7 +53,6 @@ public class MoviesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         Movie movie = data.get(position);
         switch (holder.getItemViewType()) {
             case STARRED_MOVIE:
-
                 final StarredMovieVH starredMovieVH = (StarredMovieVH) holder;
                 starredMovieVH.description.setText(movie.getOverview());
                 starredMovieVH.voteAverage.setText(movie.getVoteAverage().toString().concat("/10"));
@@ -75,6 +74,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     @Override
     public int getItemCount() {
+        LoggerDebug.print(TAG,"LastItem");
         return data.size();
     }
 
@@ -124,4 +124,8 @@ public class MoviesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         this.context = context;
     }
 
+    @Override
+    public long getItemId(int position) {
+        return data.get(position).getId();
+    }
 }

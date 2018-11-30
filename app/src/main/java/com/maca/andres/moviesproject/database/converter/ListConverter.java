@@ -27,4 +27,5 @@ public class ListConverter {
         Gson gson = new Gson();
         return gson.toJson(someObjects);
     }
+
 }

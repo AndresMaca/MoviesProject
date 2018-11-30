@@ -15,20 +15,21 @@ import java.util.Objects;
 import javax.inject.Inject;
 
 import static com.maca.andres.moviesproject.api.NetworkApiFields.POPULAR;
-import static com.maca.andres.moviesproject.api.NetworkApiFields.TOP_RATED;
 
-public class PopularMoviesViewModel extends ViewModel implements NewMovieObserver{
+public class PopularMoviesViewModel extends ViewModel implements NewMovieObserver {
     private static final String TAG = PopularMoviesViewModel.class.getSimpleName();
 
 
     private MutableLiveData<List<Movie>> movieListPopular;
-
+    private int currentPage = 1;
     private MovieRepository movieRepository;
+    protected   String CATEGORY;
 
     @Inject
     public PopularMoviesViewModel(MovieRepository movieRepository) {
         this.movieRepository = movieRepository;
-        movieRepository.register(this,POPULAR); //Attaching observer to Repository.
+        this.CATEGORY = POPULAR;
+        movieRepository.register(this, CATEGORY); //Attaching observer to Repository.
         init();
 
     }
@@ -37,12 +38,11 @@ public class PopularMoviesViewModel extends ViewModel implements NewMovieObserve
         LoggerDebug.print(TAG, "Popular Movies View Model Initialized");
         if (movieListPopular == null) {
             movieListPopular = new MutableLiveData<>();
-            if (movieRepository.getPopularMovies() != null) {
-                movieListPopular.setValue(movieRepository.getPopularMovies());
-            } else {
-                movieListPopular.setValue(new ArrayList<>());
-            }
+            movieListPopular.setValue(new ArrayList<>());
+            movieRepository.loadMoviesFromApi(CATEGORY, currentPage);
+
         }
+
     }
 
 
@@ -55,7 +55,7 @@ public class PopularMoviesViewModel extends ViewModel implements NewMovieObserve
     }
 
     private void addMovieFromRepo(Movie movie, String category) {//
-        if(category.equals(POPULAR)){
+        if (category.equals(CATEGORY)) {
             addMovieToLiveData(movieListPopular, movie);
             LoggerDebug.print(TAG, "Adding movie to Popular List");
         }
@@ -66,13 +66,6 @@ public class PopularMoviesViewModel extends ViewModel implements NewMovieObserve
         movieListMutableLiveData.postValue(movieListMutableLiveData.getValue()); //Because the thread are sending in background thread
     }
 
-    @Override
-    public void loadInitialMovies(List<Movie> movies, String category) {
-        if (category.equals(TOP_RATED)){
-            movieListPopular.postValue(movies);
-        }
-
-    }
 
     public MutableLiveData<List<Movie>> getMovieListPopular() {
         return movieListPopular;
@@ -81,6 +74,6 @@ public class PopularMoviesViewModel extends ViewModel implements NewMovieObserve
     @Override
     protected void onCleared() { //Observer is not alive anymore
         super.onCleared();
-        movieRepository.delete(POPULAR);
+        movieRepository.delete(CATEGORY);
     }
 }

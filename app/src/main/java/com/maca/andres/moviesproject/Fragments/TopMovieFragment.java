@@ -18,7 +18,9 @@ import com.maca.andres.moviesproject.devutils.LoggerDebug;
 import com.maca.andres.moviesproject.viewmodels.TopMoviesViewModel;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -34,11 +36,11 @@ public class TopMovieFragment extends android.support.v4.app.Fragment {
 
     @Inject
     ViewModelProvider.Factory viewFactory;
-
     private TopMoviesViewModel moviesViewModel;
     private MoviesAdapter moviesAdapter;
     private RecyclerView recyclerView;
     private List<Movie> data;
+    private List<Integer> keys;
 
     public TopMovieFragment() {
     }
@@ -71,7 +73,7 @@ public class TopMovieFragment extends android.support.v4.app.Fragment {
     private void configureViewModel() {
         moviesViewModel = ViewModelProviders.of(
                 this, viewFactory).get(TopMoviesViewModel.class);
-        moviesViewModel.getMovieListTopRated().observe(this, this::updateUI);
+        moviesViewModel.getmovieListTopRated().observe(this, this::updateUI);
     }
 
     private void updateUI(List<Movie> movies) {
@@ -79,6 +81,9 @@ public class TopMovieFragment extends android.support.v4.app.Fragment {
             LoggerDebug.print(TAG, "number of movies: " + movies.size());
             LoggerDebug.print(TAG, "First Movie: " + movies.get(0).getTitle());
             data.addAll(movies);
+            Set<Movie> hs = new LinkedHashSet<>(data);
+            data.clear();
+            data.addAll(hs);
             moviesAdapter.notifyDataSetChanged();
             //updateAdapter();
         }

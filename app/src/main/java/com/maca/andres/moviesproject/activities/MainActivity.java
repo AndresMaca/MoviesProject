@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.maca.andres.moviesproject.Fragments.PopularMovieFragment;
 import com.maca.andres.moviesproject.Fragments.TopMovieFragment;
 import com.maca.andres.moviesproject.R;
 import com.maca.andres.moviesproject.devutils.LoggerDebug;
@@ -26,7 +27,7 @@ import dagger.android.AndroidInjection;
 import dagger.android.DispatchingAndroidInjector;
 import dagger.android.support.HasSupportFragmentInjector;
 
-public class MainActivity extends AppCompatActivity implements HasSupportFragmentInjector{
+public class MainActivity extends AppCompatActivity implements HasSupportFragmentInjector {
     private static final String TAG = MainActivity.class.getSimpleName();
 
     /**
@@ -52,16 +53,16 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         configureDagger();
-        LoggerDebug.print(TAG,"OnCreate Main Activity");
+        LoggerDebug.print(TAG, "OnCreate Main Activity");
 
-        Toolbar toolbar =  findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
-        mViewPager =  findViewById(R.id.container);
+        mViewPager = findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
         TabLayout tabLayout = findViewById(R.id.tabs);
@@ -109,7 +110,8 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
         return dispatchingAndroidInjector;
     }
 
-    /**TODO delete this.
+    /**
+     * TODO delete this.
      * A placeholder fragment containing a simple view.
      */
     public static class PlaceholderFragment extends Fragment {
@@ -156,8 +158,20 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
+            switch (position) {
+                case 0:
+                    LoggerDebug.print(TAG, "TOP movie Fragment");
+                    return new TopMovieFragment();
 
-            return new TopMovieFragment();
+                case 1:
+                    LoggerDebug.print(TAG, "Popular Movie Fragment");
+
+                    return new PopularMovieFragment();
+                default:
+                    return PlaceholderFragment.newInstance(position);
+            }
+
+
         }
 
         @Override
@@ -166,7 +180,8 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
             return 3;
         }
     }
-    private void configureDagger(){
+
+    private void configureDagger() {
         AndroidInjection.inject(this);
     }
 }
