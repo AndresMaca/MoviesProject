@@ -42,10 +42,7 @@ public class TopMovieFragment extends android.support.v4.app.Fragment {
     private RecyclerView recyclerView;
     private LinearLayoutManager linearLayoutManager;
     private List<Movie> data;
-    private List<Integer> keys;
     private boolean isLoading;
-    private boolean isLastPage;
-    private int totalPages;
 
     public TopMovieFragment() {
     }
@@ -76,21 +73,13 @@ public class TopMovieFragment extends android.support.v4.app.Fragment {
 
             }
 
-            @Override
-            public boolean isLastPage() { //TODO delete this
-                return isLastPage;
-            }
-
-            @Override
-            public int getTotalPageCount() {
-                return totalPages;
-            }
         });
         recyclerView.setAdapter(moviesAdapter);
         return view;
     }
 
     private void loadNextPage() {
+        LoggerDebug.print(TAG, "Loading next page");
         moviesViewModel.getNextChunckOfData();
 
     }
@@ -122,7 +111,7 @@ public class TopMovieFragment extends android.support.v4.app.Fragment {
             data.clear();
             data.addAll(hs);
             moviesAdapter.notifyDataSetChanged();
-            isLoading=false;
+            isLoading = false;
             //updateAdapter();
         }
     }

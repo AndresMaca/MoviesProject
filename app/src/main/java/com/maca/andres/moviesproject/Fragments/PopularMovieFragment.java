@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.maca.andres.moviesproject.R;
+import com.maca.andres.moviesproject.adapter.CustomScrollListener;
 import com.maca.andres.moviesproject.adapter.PopularMovieAdapter;
 import com.maca.andres.moviesproject.database.entity.Movie;
 import com.maca.andres.moviesproject.devutils.LoggerDebug;
@@ -26,7 +27,7 @@ import javax.inject.Inject;
 
 import dagger.android.support.AndroidSupportInjection;
 
-public class PopularMovieFragment  extends android.support.v4.app.Fragment {
+public class PopularMovieFragment extends android.support.v4.app.Fragment {
     private static String TAG = PopularMovieFragment.class.getSimpleName();
 
     @Inject
@@ -35,7 +36,10 @@ public class PopularMovieFragment  extends android.support.v4.app.Fragment {
     private PopularMoviesViewModel moviesViewModel;
     private PopularMovieAdapter moviesAdapter;
     private RecyclerView recyclerView;
+    private LinearLayoutManager linearLayoutManager;
     private List<Movie> data;
+    private boolean isLoading;
+
 
     public PopularMovieFragment() {
     }
@@ -44,15 +48,39 @@ public class PopularMovieFragment  extends android.support.v4.app.Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_main,container,false);
+        View view = inflater.inflate(R.layout.fragment_main, container, false);
         recyclerView = view.findViewById(R.id.reyclerview_movie_list);
-        data= new ArrayList<>();
+        data = new ArrayList<>();
 
         moviesAdapter = new PopularMovieAdapter(data, getActivity());
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        linearLayoutManager = new LinearLayoutManager(getActivity());
+
+        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.addOnScrollListener(new CustomScrollListener(linearLayoutManager) {
+
+            @Override
+            public boolean isLoading() {
+
+                return isLoading;
+
+            }
+
+            @Override
+            protected void loadMoreItems() {
+                isLoading = true;
+                loadNextPage();
+
+            }
+
+        });
         recyclerView.setAdapter(moviesAdapter);
 
         return view;
+    }
+
+    private void loadNextPage() {
+        moviesViewModel.getNextChunckOfData();
+
     }
 
     @Override
@@ -82,6 +110,7 @@ public class PopularMovieFragment  extends android.support.v4.app.Fragment {
             data.clear();
             data.addAll(hs);
             moviesAdapter.notifyDataSetChanged();
+            isLoading = false;
             //updateAdapter();
         }
     }

@@ -76,4 +76,10 @@ public class PopularMoviesViewModel extends ViewModel implements NewMovieObserve
         super.onCleared();
         movieRepository.delete(CATEGORY);
     }
+    public void getNextChunckOfData(){
+        currentPage++;
+        LoggerDebug.print(TAG,"Getting next Page");
+        movieRepository.loadMoviesFromApi(CATEGORY, currentPage);
+    }
+
 }
