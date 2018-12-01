@@ -37,12 +37,11 @@ public class DetailsActivity extends AppCompatActivity {
         LoggerDebug.print(TAG, "Title: "+movie.getTitle());
         setText(title,movie.getTitle());
         setText(description, movie.getOverview());
-        //TODO dont pass hardcoded strings
         setTextWithPreString(votesAv,"/10" ,String.valueOf(movie.getVoteAverage()));
         setText(realeaseDate, String.valueOf(movie.getReleaseDate()));
-        setTextWithPreString(originalLanguage, movie.getReleaseDate(), "Original Language");
-        setTextWithPreString(voteCount, String.valueOf(movie.getVoteCount()), "Vote Count");
-        setTextWithPreString(popularity, String.valueOf(movie.getPopularity()),"Popularity");
+        setTextWithPreString(originalLanguage, movie.getReleaseDate(), getResources().getString(R.string.language));
+        setTextWithPreString(voteCount, String.valueOf(movie.getVoteCount()), getResources().getString(R.string.vote_count));
+        setTextWithPreString(popularity, String.valueOf(movie.getPopularity()),getResources().getString(R.string.popularity));
         Glide.with(this).load("https://image.tmdb.org/t/p/w500/" + movie.getPosterPath()).into(poster);
 
 

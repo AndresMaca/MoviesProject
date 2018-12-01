@@ -1,6 +1,5 @@
 package com.maca.andres.moviesproject.viewmodels;
 
-
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 
@@ -15,46 +14,41 @@ import java.util.Objects;
 
 import javax.inject.Inject;
 
-import static com.maca.andres.moviesproject.api.NetworkApiFields.TOP_RATED;
+import static com.maca.andres.moviesproject.api.NetworkApiFields.UPCOMING;
 
-/*
-This is the ViewModel Class, it has a scope to the fragments, it is useful for keep data up even if the user rotates the device.
-In this case this is scoped from every fragment.
- */
-public class TopMoviesViewModel extends ViewModel implements NewMovieObserver {
-    private static final String TAG = TopMoviesViewModel.class.getSimpleName();
+public class UpcomingMoviesViewModel extends ViewModel implements NewMovieObserver {
+    private static final String TAG = UpcomingMoviesViewModel.class.getSimpleName();
 
 
-    private MutableLiveData<List<Movie>> movieListTopRated;
+    private MutableLiveData<List<Movie>> movieListPopular;
     private int currentPage = 1;
     private MovieRepository movieRepository;
-    protected String CATEGORY;
+    protected String CATEGORY; //HINT: if you can simplify remember your protected modifiers
 
     @Inject
-    public TopMoviesViewModel(MovieRepository movieRepository) {
+    public UpcomingMoviesViewModel(MovieRepository movieRepository) {
         this.movieRepository = movieRepository;
-        this.CATEGORY = TOP_RATED; //HERE is some of magic! QUIZ: Can you achieve the same functionalities with only one ViewModelClass? (Heritage allowed )
-        //HINT: Don't forgot to change the category!
+        this.CATEGORY = UPCOMING;
         movieRepository.register(this, CATEGORY); //Attaching observer to Repository.
         init();
 
     }
 
     private void init() {
-        LoggerDebug.print(TAG, "Top Movies View Model Initialized");
-        if (movieListTopRated == null) {
-            LoggerDebug.print(TAG, "MOVIE LIST IS NULL");
-            movieListTopRated = new MutableLiveData<>();
-            movieListTopRated.setValue(new ArrayList<>());
+        LoggerDebug.print(TAG, "Popular Movies View Model Initialized");
+        if (movieListPopular == null) {
+            movieListPopular = new MutableLiveData<>();
+            movieListPopular.setValue(new ArrayList<>());
             movieRepository.loadMoviesFromApi(CATEGORY, currentPage);
 
         }
+
     }
 
 
     @Override
     public void update(Movie movie, String category) {
-        //  LoggerDebug.print(TAG, ".... getting new movie from repo");
+        LoggerDebug.print(TAG, ".... getting new movie from repo");
         LoggerDebug.print(TAG, "movie title: " + movie.getTitle());
         addMovieFromRepo(movie, category);
 
@@ -62,8 +56,8 @@ public class TopMoviesViewModel extends ViewModel implements NewMovieObserver {
 
     private void addMovieFromRepo(Movie movie, String category) {//
         if (category.equals(CATEGORY)) {
-            addMovieToLiveData(movieListTopRated, movie);
-            LoggerDebug.print(TAG, "Adding movie to Top Movies List");
+            addMovieToLiveData(movieListPopular, movie);
+            LoggerDebug.print(TAG, "Adding movie to UPCOMING List");
         }
     }
 
@@ -73,8 +67,8 @@ public class TopMoviesViewModel extends ViewModel implements NewMovieObserver {
     }
 
 
-    public MutableLiveData<List<Movie>> getmovieListTopRated() {
-        return movieListTopRated;
+    public MutableLiveData<List<Movie>> getMovieListUpcoming() {
+        return movieListPopular;
     }
 
     @Override
@@ -82,9 +76,12 @@ public class TopMoviesViewModel extends ViewModel implements NewMovieObserver {
         super.onCleared();
         movieRepository.delete(CATEGORY);
     }
-    public void getNextChunckOfData(){
+
+    public void getNextChunckOfData() {
         currentPage++;
+        LoggerDebug.print(TAG, "Getting next Page");
         movieRepository.loadMoviesFromApi(CATEGORY, currentPage);
     }
 
 }
+
