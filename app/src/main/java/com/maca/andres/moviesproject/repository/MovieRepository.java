@@ -30,7 +30,7 @@ import static com.maca.andres.moviesproject.api.NetworkApiFields.API_KEY;
  *
  * Repository class should be called only by viewModel.
  *
- * 
+ *
  */
 @Singleton
 public class MovieRepository implements NewMovieSubject, SearchSubject {
