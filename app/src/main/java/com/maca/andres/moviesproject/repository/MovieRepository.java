@@ -65,7 +65,6 @@ public class MovieRepository implements NewMovieSubject, SearchSubject {
                     List<Integer> moviesIds = new ArrayList<>();
 
                     for (int i = 0; i < apiResponse.getResults().size(); i++) {
-                        //DEBUG como hacer que no se repita con los resultados obtenidos.
                         LoggerDebug.print(TAG, "Iteration: " + i);
                         apiResponse.getResults().get(i).setCategory(category);
                         int finalI = i;
@@ -73,7 +72,7 @@ public class MovieRepository implements NewMovieSubject, SearchSubject {
                         moviesIds.add(apiResponse.getResults().get(i).getId());
                         //Save it just for update keys like vote count and popularity. It can be easily omitted checking
                         // if the movie are already in the database with movieDao.loadMovie(movieid);
-                        LoggerDebug.print(TAG, "Movie Saved!"); //TODO COMO putas hago que esta mierda no se envie dos veces!!! primera es cuando la carga de la base de datos la segunda es cuando llegan de internet.
+                        LoggerDebug.print(TAG, "Movie Saved!");
                         if (!(initialKeys.contains(apiResponse.getResults().get(i).getId()))) { //The observers doesnt contains this movie! Sending to All.
                             LoggerDebug.print(TAG, "Doesn't contains this movie, notifying observers");
                             apiResponse.getResults().get(i).getGenreIds();

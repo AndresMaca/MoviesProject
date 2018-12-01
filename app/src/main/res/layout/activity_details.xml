@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
+            android:background="@color/colorPrimaryDark"
             android:layout_height="match_parent">
     <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
                                         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -17,7 +18,7 @@
                       android:paddingEnd="10dp"
                       android:paddingStart="10dp"
                       android:paddingTop="10dp">
-            <ImageView android:id="@+id/starred_image" android:layout_width="match_parent"
+            <ImageView android:id="@+id/details_image" android:layout_width="match_parent"
                        android:layout_height="250dp"
                        android:layout_marginBottom="10dp"
                        android:maxHeight="200dp"/>
@@ -26,7 +27,7 @@
 
             >
 
-                <TextView android:id="@+id/starred_description" android:layout_width="wrap_content"
+                <TextView android:id="@+id/details_description" android:layout_width="wrap_content"
                           android:layout_height="wrap_content"
                           android:layout_alignParentStart="true"
                           android:layout_centerVertical="true"
@@ -34,7 +35,7 @@
                           android:paddingTop="30dp"
                           android:text="@string/app_name" android:textColor="@color/colorWhiteText"
                           android:textSize="15sp" android:textStyle="bold"/>
-                <TextView android:id="@+id/starred_title" android:layout_width="wrap_content"
+                <TextView android:id="@+id/details_title" android:layout_width="wrap_content"
                           android:layout_height="wrap_content"
                           android:paddingBottom="10dp"
                           android:text="@string/app_name"
@@ -42,7 +43,7 @@
                           android:textSize="20sp"
                           android:textStyle="bold"
                 />
-                <TextView android:id="@+id/vote_average" android:layout_width="match_parent"
+                <TextView android:id="@+id/details_vote_average" android:layout_width="match_parent"
                           android:layout_height="wrap_content"
                           android:fontFamily="sans-serif-condensed"
                           android:paddingBottom="10dp" android:text="@string/app_name"
@@ -51,39 +52,39 @@
                           android:textStyle="italic"/>
 
             </RelativeLayout>
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                      android:text="@string/app_name"
-                      android:textSize="15sp"
-                      android:textStyle="bold"
-                      android:id="@+id/starred_release_date"
-                      android:textColor="@color/colorWhiteText"
+            <TextView android:id="@+id/details_release_date" android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
                       android:fontFamily="sans-serif-condensed"
-            />
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                       android:text="@string/app_name"
+                      android:textColor="@color/colorWhiteText"
                       android:textSize="15sp"
                       android:textStyle="bold"
-                      android:id="@+id/original_language"
+            />
+            <TextView android:id="@+id/details_original_language" android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:fontFamily="sans-serif-condensed"
+                      android:text="@string/app_name"
+                      android:textColor="@color/colorWhiteText"
 
-                      android:textColor="@color/colorWhiteText"
-                      android:fontFamily="sans-serif-condensed"
-            />
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                      android:text="@string/app_name"
                       android:textSize="15sp"
                       android:textStyle="bold"
-                      android:id="@+id/vote_count"
+            />
+            <TextView android:id="@+id/details_vote_count" android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:fontFamily="sans-serif-condensed"
+                      android:text="@string/app_name"
+                      android:textColor="@color/colorWhiteText"
 
-                      android:textColor="@color/colorWhiteText"
-                      android:fontFamily="sans-serif-condensed"
-            />
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                      android:text="@string/app_name"
                       android:textSize="15sp"
                       android:textStyle="bold"
-                      android:id="@+id/starred_popularity"
-                      android:textColor="@color/colorWhiteText"
+            />
+            <TextView android:id="@+id/details_starred_popularity" android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
                       android:fontFamily="sans-serif-condensed"
+                      android:text="@string/app_name"
+                      android:textColor="@color/colorWhiteText"
+                      android:textSize="15sp"
+                      android:textStyle="bold"
             />
 
 
