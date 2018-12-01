@@ -7,6 +7,6 @@ public interface NewMovieSubject {
 
     void delete(String Name);
 
-    void notifyNewMovieObserver(Movie movie, String category);
+    void notifyToNewMovieObserver(Movie movie, String category);
 
 }

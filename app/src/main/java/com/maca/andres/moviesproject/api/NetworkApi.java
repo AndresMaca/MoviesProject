@@ -13,4 +13,7 @@ public interface NetworkApi {
 
     @GET("/3/movie/{category}") //TODO quitar el /3/
     Call<ApiResponse> getMoviesFromApiByCatAndPage(@Path("category") String category, @Query("api_key") String apiKey,@Query("page") int page);
+
+    @GET("/3/search/movie")
+    Call<ApiResponse> searchMovieOnline(@Query("api_key") String api_key, @Query("query") String movie_query);
 }

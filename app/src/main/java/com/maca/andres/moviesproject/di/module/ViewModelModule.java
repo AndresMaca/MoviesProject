@@ -6,6 +6,7 @@ import android.arch.lifecycle.ViewModelProvider;
 import com.maca.andres.moviesproject.di.key.ViewModelKey;
 import com.maca.andres.moviesproject.viewmodels.FactoryViewModel;
 import com.maca.andres.moviesproject.viewmodels.PopularMoviesViewModel;
+import com.maca.andres.moviesproject.viewmodels.SearchViewModel;
 import com.maca.andres.moviesproject.viewmodels.TopMoviesViewModel;
 
 import dagger.Binds;
@@ -24,6 +25,10 @@ public abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(PopularMoviesViewModel.class)
     abstract ViewModel bindsPopularMovieViewModel(PopularMoviesViewModel moviesViewModel);
+    @Binds
+    @IntoMap
+    @ViewModelKey(SearchViewModel.class)
+    abstract ViewModel bindsSearchViewModel(SearchViewModel moviesViewModel);
     @Binds
     abstract ViewModelProvider.Factory bindViewModelFactory(FactoryViewModel factory);
 

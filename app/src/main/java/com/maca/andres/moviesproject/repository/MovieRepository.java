@@ -29,11 +29,12 @@ import static com.maca.andres.moviesproject.api.NetworkApiFields.API_KEY;
  * communication always taking care about every class function.
  */
 @Singleton
-public class MovieRepository implements NewMovieSubject {
+public class MovieRepository implements NewMovieSubject, SearchSubject {
     private static final String TAG = MovieRepository.class.getSimpleName();
     private final Executor executor; //task like local database queries are made with the executor for dont load the UI thread
     private final MovieDao movieDao;
     private final NetworkApi networkApi;
+    private SearchObserver searchObserver;
     private HashMap<String, NewMovieObserver> newMovieObservers;
 
 
@@ -76,7 +77,7 @@ public class MovieRepository implements NewMovieSubject {
                         if (!(initialKeys.contains(apiResponse.getResults().get(i).getId()))) { //The observers doesnt contains this movie! Sending to All.
                             LoggerDebug.print(TAG, "Doesn't contains this movie, notifying observers");
                             apiResponse.getResults().get(i).getGenreIds();
-                            notifyNewMovieObserver(apiResponse.getResults().get(i), category);
+                            notifyToNewMovieObserver(apiResponse.getResults().get(i), category);
 
                         } else {
                             LoggerDebug.print(TAG, "Movie Already in the observer");
@@ -98,9 +99,9 @@ public class MovieRepository implements NewMovieSubject {
                     LoggerDebug.print(TAG, "Quering cat: " + category + " page: " + page);
                     MoviePage moviePage = movieDao.loadMovieIdsByCategoryPage(category, page);
                     if (moviePage != null) {
-                        LoggerDebug.print(TAG, "Movie Ids" + moviePage.getMoviesIds()+"MOVIES SIZE: "   +moviePage.getMoviesIds().size());
+                        LoggerDebug.print(TAG, "Movie Ids" + moviePage.getMoviesIds() + "MOVIES SIZE: " + moviePage.getMoviesIds().size());
                         for (int i = 0; i < moviePage.getMoviesIds().size(); i++) {
-                            notifyNewMovieObserver(movieDao.loadMovie(moviePage.getMoviesIds().get(i)), category);
+                            notifyToNewMovieObserver(movieDao.loadMovie(moviePage.getMoviesIds().get(i)), category);
                         }
                     } else {
                         LoggerDebug.print(TAG, "Unsuccessful query!");
@@ -133,7 +134,7 @@ public class MovieRepository implements NewMovieSubject {
     }
 
     @Override
-    public void notifyNewMovieObserver(Movie movie, String category) {
+    public void notifyToNewMovieObserver(Movie movie, String category) {
         LoggerDebug.print(TAG, "Observers: " + newMovieObservers.size());
         if (newMovieObservers.containsKey(category))
             newMovieObservers.get(category).update(movie, category);
@@ -142,5 +143,46 @@ public class MovieRepository implements NewMovieSubject {
     }
 
 
+    @Override
+    public void registerSearchObserver(SearchObserver searchObserver) {
+        this.searchObserver = searchObserver;
+    }
 
+    @Override
+    public void deleteSearchObserver() {
+        if (searchObserver != null) searchObserver = null;
+    }
+
+    @Override
+    public void notifyToSearchObservers(List<Movie> movies) {
+        //Get from query
+        if(searchObserver != null) searchObserver.update(movies);
+
+    }
+
+    public void searchMovie(String movieName) {
+        executor.execute(() -> {
+            networkApi.searchMovieOnline(API_KEY, movieName).enqueue(new Callback<ApiResponse>() {
+                @Override
+                public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
+                    LoggerDebug.print(TAG, "URL " + call.request().url().toString());
+                    ApiResponse apiResponse = response.body();
+                    if (apiResponse != null)
+                        notifyToSearchObservers(apiResponse.getResults());
+                }
+
+                @Override
+                public void onFailure(Call<ApiResponse> call, Throwable t) {
+                    //TODO query from database!
+                    executor.execute(()->{
+                        LoggerDebug.print(TAG,"Searching movie: "+movieName.substring(0, 1).toUpperCase() + movieName.substring(1));
+                        List<Movie> movies = movieDao.searchMovie(movieName.substring(0, 1).toUpperCase() + movieName.substring(1));
+                        if( movies != null) notifyToSearchObservers(movies);
+                    });
+
+                }
+            });
+        });
+
+    }
 }

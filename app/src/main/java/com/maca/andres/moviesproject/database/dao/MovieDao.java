@@ -26,7 +26,8 @@ public interface MovieDao {
 
     @Query("SELECT * FROM movie")
     List<Movie> movies();
-
+    @Query("SELECT * FROM movie WHERE title LIKE :title")
+    List<Movie> searchMovie(String title);
 
     @Query("SELECT * FROM movie WHERE category = :category")
     List<Movie> getAllMoviesBy(String category);
