@@ -18,14 +18,33 @@ The dataflow is running with the following way:
    - View Layer: Perfect! Im going to *update* the view! <br />
 
 # Repo
-The
+The repository is the responsible of query data from the network and the local database. It has executor to dont block ui thread 
 # View Model
+Connects the repo with the view layer, im using LiveData to shoot changes to the view.
 # Views
+Fragments that are observing for data changes of LiveData. When they need more data they talk with the ViewModel instead of the repo. Just for good practices.
+
+# Project Folder Structure
+ - Activities contains the activities.
+ - Adapter contains the recycler adapter. In this case I use heritage and override the get item view type method for differentiate the starred movies of the normal ones, between Popular Movies and Top Movies, you can implement the way you want just edit the content inside the if.
+ - Api: The api interface. And the fields that help us for networks queries.
+ - Database: local database related.
+  - converter: Room needs some help with List of objects so, this class help us.
+  - dao: Our Movie sentences to make sql interactions
+  - entity: The objects that i use 
+ - devutils: Forget me for this, i love make custom log debug 
+- di : dependecy injection. So here is when dagger is configured. You must add your View Model in the ViewModelModule. And if you have fragments linked with activities ActivityModules is where you have to look.
+- fragments: contains our fragments
+- viewmodels: contains the view models and the viewmodelFactory -> checks that where going to use a viewmodel 
+  
+  
+ 
 # Before you read this.
 Im not going to teach you how dagger2 works there are hundred of several good quality post, so go ahead and read some before, TL/DR okay this is not a tutorial and im going to asume you knows some basics concepts:
 Dagger2 allows you make *dependency injection* (yeah thats are the initials of the folder di) and nice *singletons* its like you dont need to instantiate your web services mutiple times instead make it just one.
 Room allow you to make sql simplier but dont forget to make the queries in non user interface threads!
 
-The running config is in AndroidStudio 3.1.2
-
+The running config is AndroidStudio 3.1.2
+Osx Mojave 10.14.1
+Android 8.0
 # MADE WITH  ❤️ FROM COLOMBIA
