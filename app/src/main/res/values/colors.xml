@@ -5,6 +5,8 @@
     <color name="colorAccent">#718792</color>
     <color name="colorWhite">#ffffff</color>
     <color name="colorWhiteText">#ece8e8</color>
+    <color name="colorWhiteTextDark">#b9b8b8</color>
+
     <color name="colorSecundary">#ad1457</color>
     <color name="colorSecundaryDark">#78002e</color>
     <color name="colorSecundaryAccent">#e35183</color>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/colorPrimaryDark"
+              android:orientation="vertical"
+
+              android:weightSum="7">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="0dp"
+                  android:layout_weight="1"
+                  android:background="@color/colorPrimary"
+                  android:weightSum="10"
+
+    >
+        <EditText android:id="@+id/movie_search_text_input" android:layout_width="0dp"
+                  android:layout_height="match_parent"
+                  android:layout_weight="9"
+                  android:gravity="center"
+                  android:hint="@string/app_name"
+                  android:shadowColor="@color/colorSecundary"
+                  android:textColor="@color/colorWhite"
+                  android:textColorHint="@color/colorWhiteTextDark"
+                  android:textColorLink="@color/colorSecundaryAccent"/>
+        <Button android:id="@+id/search_movie_button" android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="@drawable/ic_search_black_24dp"
+                android:paddingEnd="5dp"
+                android:paddingStart="5dp"
+        />
+
+
+    </LinearLayout>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/reyclerview_movie_search"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="6"
+        android:background="@color/colorPrimaryDark">
+
+
+    </android.support.v7.widget.RecyclerView>
+
+
+</LinearLayout>

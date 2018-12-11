@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,10 +14,10 @@ import android.view.ViewGroup;
 
 import com.maca.andres.moviesproject.R;
 import com.maca.andres.moviesproject.adapter.CustomScrollListener;
-import com.maca.andres.moviesproject.adapter.MoviesAdapter;
+import com.maca.andres.moviesproject.adapter.PopularMovieAdapter;
 import com.maca.andres.moviesproject.database.entity.Movie;
 import com.maca.andres.moviesproject.devutils.LoggerDebug;
-import com.maca.andres.moviesproject.viewmodels.TopMoviesViewModel;
+import com.maca.andres.moviesproject.viewmodels.UpcomingMoviesViewModel;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -26,25 +27,22 @@ import java.util.Set;
 import javax.inject.Inject;
 
 import dagger.android.support.AndroidSupportInjection;
-/*
-I choose to make individual fragments instead made one ParentFragment and pass some args
-to it (shorter way) because maybe in the future the app requires some custom modification to each of the fragments so its more cleaner to
-implements some changes with this.
- */
 
-public class TopMovieFragment extends android.support.v4.app.Fragment {
-    private static String TAG = TopMovieFragment.class.getSimpleName();
+public class UpcomingMovieFragment extends Fragment {
+    private static String TAG = UpcomingMovieFragment.class.getSimpleName();
 
     @Inject
     ViewModelProvider.Factory viewFactory;
-    private TopMoviesViewModel moviesViewModel;
-    private MoviesAdapter moviesAdapter;
+
+    private UpcomingMoviesViewModel moviesViewModel;
+    private PopularMovieAdapter moviesAdapter;
     private RecyclerView recyclerView;
     private LinearLayoutManager linearLayoutManager;
     private List<Movie> data;
     private boolean isLoading;
 
-    public TopMovieFragment() {
+
+    public UpcomingMovieFragment() {
     }
 
 
@@ -54,8 +52,10 @@ public class TopMovieFragment extends android.support.v4.app.Fragment {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
         recyclerView = view.findViewById(R.id.reyclerview_movie_list);
         data = new ArrayList<>();
-        moviesAdapter = new MoviesAdapter(data, getActivity());
+
+        moviesAdapter = new PopularMovieAdapter(data, getActivity());
         linearLayoutManager = new LinearLayoutManager(getActivity());
+
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.addOnScrollListener(new CustomScrollListener(linearLayoutManager) {
 
@@ -75,11 +75,11 @@ public class TopMovieFragment extends android.support.v4.app.Fragment {
 
         });
         recyclerView.setAdapter(moviesAdapter);
+
         return view;
     }
 
     private void loadNextPage() {
-        LoggerDebug.print(TAG, "Loading next page");
         moviesViewModel.getNextChunckOfData();
 
     }
@@ -96,16 +96,10 @@ public class TopMovieFragment extends android.support.v4.app.Fragment {
         AndroidSupportInjection.inject(this);
     }
 
-    /*
-    In case that you want to make a super Parent fragment to simplify the three fragments, be sure to change (overrides) this in each of ones
-    because you have to change the ViewModel if you instantiate the same view model multiple times at same time the app (the presented data)
-    is going to have unexpected behaviors, VeryDifficultQuiz: try yourself and ask me if you need the reason.(Hint: Remember that the instance is observing a
-    LiveData and for each initialization you're attaching an observer to the repo...)
-     */
     private void configureViewModel() {
         moviesViewModel = ViewModelProviders.of(
-                this, viewFactory).get(TopMoviesViewModel.class);
-        moviesViewModel.getmovieListTopRated().observe(this, this::updateUI);
+                this, viewFactory).get(UpcomingMoviesViewModel.class);
+        moviesViewModel.getMovieListUpcoming().observe(this, this::updateUI);
     }
 
     private void updateUI(List<Movie> movies) {
